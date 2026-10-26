@@ -60,8 +60,8 @@
 
   /* Dimensões */
   --sidebar-width: 256px;
-  --header-height: 70px;
-  --header-bg: rgba(255, 255, 255, 0.82);
+  --header-height: 84px;
+  --header-bg: rgba(255, 255, 255, 0.85);
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;

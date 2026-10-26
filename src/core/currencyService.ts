@@ -35,11 +35,12 @@ class CurrencyService {
     }
 
     // Padrão BRL
+    const hasCents = !Number.isInteger(valueInBRL);
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      minimumFractionDigits: hasCents ? 2 : 0,
+      maximumFractionDigits: 2
     }).format(valueInBRL);
   }
 
@@ -50,6 +51,28 @@ class CurrencyService {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }).format(valueInBRL);
+  }
+
+  /**
+   * Formata em tempo real enquanto o usuário digita (ex: "15000000" -> "150.000,00")
+   */
+  public maskInput(rawValue: string): string {
+    const digits = rawValue.replace(/\D/g, '');
+    if (!digits) return '';
+    const numericValue = parseInt(digits, 10) / 100;
+    return numericValue.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  /**
+   * Converte uma string formatada ("150.000,00") de volta para número (150000)
+   */
+  public parseInput(maskedValue: string): number {
+    const digits = maskedValue.replace(/\D/g, '');
+    if (!digits) return 0;
+    return parseInt(digits, 10) / 100;
   }
 }
 

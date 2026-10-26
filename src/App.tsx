@@ -29,12 +29,12 @@ export const App: React.FC = () => {
 
   const getModuleTitle = () => {
     switch (activeModule) {
-      case 'dashboard': return 'Visão Geral & Métricas';
-      case 'leads': return 'Leads & Prospecção Ativa';
-      case 'opportunities': return 'Pipeline de Vendas (Kanban)';
-      case 'accounts': return 'Contas Corporativas (Visão 360º)';
-      case 'contacts': return 'Contatos & Decisores';
-      case 'activities': return 'Linha do Tempo de Atividades';
+      case 'dashboard': return 'Visão Geral';
+      case 'leads': return 'Leads';
+      case 'opportunities': return 'Pipeline';
+      case 'accounts': return 'Contas';
+      case 'contacts': return 'Contatos';
+      case 'activities': return 'Atividades';
     }
   };
 

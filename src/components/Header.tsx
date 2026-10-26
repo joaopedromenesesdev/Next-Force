@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sun, Moon, Search, RotateCcw, Command, UserCheck, Briefcase } from 'lucide-react';
+import { Sun, Moon, Search, RotateCcw, Command, UserCheck } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 
 interface HeaderProps {
@@ -16,7 +16,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCommand, onResetData, acti
       style={{
         height: 'var(--header-height)',
         borderBottom: '1px solid var(--border-color)',
-        backgroundColor: 'var(--bg-secondary)',
+        backgroundColor: 'var(--header-bg, var(--bg-secondary))',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -28,105 +30,164 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCommand, onResetData, acti
       }}
     >
       {/* Título do Módulo Ativo */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <h1 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <h1
+          style={{
+            fontSize: '17px',
+            fontWeight: 700,
+            letterSpacing: '-0.02em',
+            color: 'var(--text-primary)',
+            margin: 0
+          }}
+        >
           {activeModuleTitle}
         </h1>
       </div>
 
       {/* Ações Centrais / Direita */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        {/* Barra de Busca rápida (Ctrl + K) */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {/* Barra de Busca Compacta Estilo Linear (Ctrl / Cmd + K) */}
         <button
           onClick={onOpenCommand}
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
-            padding: '7px 14px',
+            justifyContent: 'space-between',
+            gap: '12px',
+            width: '210px',
+            padding: '6px 12px',
             borderRadius: 'var(--radius-sm)',
             border: '1px solid var(--border-color)',
             backgroundColor: 'var(--bg-primary)',
-            color: 'var(--text-secondary)',
+            color: 'var(--text-muted)',
             fontSize: '13px',
             cursor: 'pointer',
             transition: 'all 0.15s ease'
           }}
+          onMouseEnter={e => {
+            e.currentTarget.style.borderColor = 'var(--brand-primary)';
+            e.currentTarget.style.color = 'var(--text-secondary)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.borderColor = 'var(--border-color)';
+            e.currentTarget.style.color = 'var(--text-muted)';
+          }}
         >
-          <Search size={15} color="var(--brand-primary)" />
-          <span>Buscar cliente, lead ou negócio...</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Search size={14} color="var(--brand-primary)" />
+            <span>Buscar...</span>
+          </div>
           <kbd
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '3px',
-              padding: '2px 6px',
+              gap: '2px',
+              padding: '1px 5px',
               backgroundColor: 'var(--bg-secondary)',
               border: '1px solid var(--border-color)',
               borderRadius: '4px',
-              fontSize: '11px',
+              fontSize: '10px',
               fontWeight: 600,
-              color: 'var(--text-muted)',
-              marginLeft: '8px'
+              color: 'var(--text-muted)'
             }}
           >
-            <Command size={10} /> K
+            <Command size={9} /> K
           </kbd>
         </button>
 
-        {/* Botão de Reset Demo */}
+        {/* Divisor sutil */}
+        <div style={{ width: '1px', height: '22px', backgroundColor: 'var(--border-subtle)', margin: '0 2px' }} />
+
+        {/* Botão de Reset Demo (Apenas Ícone com Tooltip) */}
         <button
           onClick={onResetData}
-          title="Resetar dados demonstrativos para o estado original"
-          className="btn btn-secondary btn-sm"
-          style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+          title="Restaurar dados de demonstração"
+          aria-label="Restaurar dados"
+          className="btn btn-secondary btn-icon"
+          style={{
+            width: '34px',
+            height: '34px',
+            padding: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--text-secondary)',
+            borderColor: 'var(--border-color)',
+            borderRadius: 'var(--radius-sm)'
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.color = 'var(--brand-primary)';
+            e.currentTarget.style.borderColor = 'var(--brand-primary)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.color = 'var(--text-secondary)';
+            e.currentTarget.style.borderColor = 'var(--border-color)';
+          }}
         >
-          <RotateCcw size={14} color="var(--brand-primary)" />
-          <span>Restaurar Dados</span>
+          <RotateCcw size={15} />
         </button>
 
-        {/* Seletor de Tema (Sol / Lua) */}
+        {/* Seletor de Tema (Sol / Lua - Apenas Ícone com Tooltip) */}
         <button
           onClick={toggleTheme}
           title={isDark ? 'Mudar para Light Mode (Branco & Ouro)' : 'Mudar para Dark Mode (Noir & Ouro)'}
+          aria-label="Alternar tema"
           className="btn btn-secondary btn-icon"
-          style={{ color: 'var(--brand-primary)' }}
+          style={{
+            width: '34px',
+            height: '34px',
+            padding: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--brand-primary)',
+            borderColor: 'var(--border-color)',
+            borderRadius: 'var(--radius-sm)'
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.borderColor = 'var(--brand-primary)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.borderColor = 'var(--border-color)';
+          }}
         >
-          {isDark ? <Sun size={18} /> : <Moon size={18} />}
+          {isDark ? <Sun size={16} /> : <Moon size={16} />}
         </button>
 
-        {/* Perfil do Usuário */}
+        {/* Divisor sutil antes do perfil */}
+        <div style={{ width: '1px', height: '22px', backgroundColor: 'var(--border-subtle)', margin: '0 2px' }} />
+
+        {/* Perfil Minimalista em Linha Única */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '10px',
-            marginLeft: '8px',
-            paddingLeft: '12px',
-            borderLeft: '1px solid var(--border-color)'
+            gap: '9px',
+            padding: '3px 8px 3px 4px',
+            borderRadius: 'var(--radius-full)',
+            transition: 'background-color 0.15s ease',
+            cursor: 'default'
           }}
         >
           <div
             style={{
-              width: '34px',
-              height: '34px',
+              width: '30px',
+              height: '30px',
               borderRadius: 'var(--radius-full)',
               background: 'var(--gold-gradient)',
               color: '#09090B',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 2px 8px var(--brand-glow)'
+              boxShadow: '0 2px 6px var(--brand-glow)',
+              flexShrink: 0
             }}
           >
-            <UserCheck size={17} strokeWidth={2.2} />
+            <UserCheck size={15} strokeWidth={2.4} />
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '13px', fontWeight: 600, lineHeight: 1.2 }}>João Pedro</span>
-            <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <Briefcase size={10} color="var(--brand-primary)" /> Executivo de Vendas
-            </span>
-          </div>
+          <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
+            João Pedro
+          </span>
         </div>
       </div>
     </header>

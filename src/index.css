@@ -60,7 +60,8 @@
 
   /* Dimensões */
   --sidebar-width: 256px;
-  --header-height: 64px;
+  --header-height: 70px;
+  --header-bg: rgba(255, 255, 255, 0.82);
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
@@ -69,6 +70,7 @@
 
 [data-theme="dark"] {
   /* Dark Mode — Obsidian Black, Pure White & Luminous Metallic Gold */
+  --header-bg: rgba(16, 16, 20, 0.78);
   --bg-primary: #070709;
   --bg-secondary: #101014;
   --bg-tertiary: #18181F;

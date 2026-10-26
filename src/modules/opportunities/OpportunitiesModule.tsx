@@ -4,6 +4,8 @@ import { Opportunity, Account, StageId, ID } from '../../types/crm';
 import { PIPELINE_STAGES } from '../../core/initialData';
 import { currencyService } from '../../core/currencyService';
 import { fireClosedWonCelebration } from '../../components/ConfettiCelebration';
+import { CurrencyInput } from '../../components/CurrencyInput';
+import { parseCurrencyToNumber } from '../../utils/currencyMask';
 
 interface OpportunitiesModuleProps {
   opportunities: Opportunity[];
@@ -25,7 +27,7 @@ export const OpportunitiesModule: React.FC<OpportunitiesModuleProps> = ({
   // Form states
   const [name, setName] = useState('');
   const [accountId, setAccountId] = useState(accounts[0]?.id || '');
-  const [amount, setAmount] = useState('150000');
+  const [amount, setAmount] = useState('150.000,00');
   const [stage, setStage] = useState<StageId>('prospeccao');
 
   const getAccountName = (accId: ID) => {
@@ -56,7 +58,7 @@ export const OpportunitiesModule: React.FC<OpportunitiesModuleProps> = ({
     onCreateOpportunity({
       accountId,
       name,
-      amount: Number(amount) || 100000,
+      amount: parseCurrencyToNumber(amount) || 100000,
       stage,
       probability: stConfig ? stConfig.probability : 25,
       closeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -384,7 +386,7 @@ export const OpportunitiesModule: React.FC<OpportunitiesModuleProps> = ({
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
                   <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '4px' }}>Valor (em R$)</label>
-                  <input type="number" required className="input" value={amount} onChange={e => setAmount(e.target.value)} />
+                  <CurrencyInput required value={amount} onChangeValue={(_, formatted) => setAmount(formatted)} />
                 </div>
                 <div>
                   <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '4px' }}>Estágio Inicial</label>

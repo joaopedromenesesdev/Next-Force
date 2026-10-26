@@ -3,6 +3,8 @@ import { ArrowRightCircle, Plus, Search, Building2, User, Kanban, Check, Sparkle
 import { Lead, ID } from '../../types/crm';
 import { Badge } from '../../components/Badge';
 import { currencyService } from '../../core/currencyService';
+import { CurrencyInput } from '../../components/CurrencyInput';
+import { parseCurrencyToNumber } from '../../utils/currencyMask';
 
 interface LeadsModuleProps {
   leads: Lead[];
@@ -21,7 +23,7 @@ export const LeadsModule: React.FC<LeadsModuleProps> = ({ leads, onConvertLead, 
   const [newTitle, setNewTitle] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [newPhone, setNewPhone] = useState('');
-  const [newValue, setNewValue] = useState('150000');
+  const [newValue, setNewValue] = useState('150.000,00');
   const [newCity, setNewCity] = useState('São Paulo, SP');
 
   const filteredLeads = leads.filter(l =>
@@ -41,7 +43,7 @@ export const LeadsModule: React.FC<LeadsModuleProps> = ({ leads, onConvertLead, 
       score: 75,
       source: 'Website',
       industry: 'Tecnologia & Serviços',
-      estimatedValue: Number(newValue) || 100000,
+      estimatedValue: parseCurrencyToNumber(newValue) || 100000,
       city: newCity,
       owner: 'João Silva'
     });
@@ -293,7 +295,7 @@ export const LeadsModule: React.FC<LeadsModuleProps> = ({ leads, onConvertLead, 
                 </div>
                 <div>
                   <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '4px' }}>Potencial (R$)</label>
-                  <input type="number" className="input" value={newValue} onChange={e => setNewValue(e.target.value)} />
+                  <CurrencyInput value={newValue} onChangeValue={(_, formatted) => setNewValue(formatted)} />
                 </div>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>

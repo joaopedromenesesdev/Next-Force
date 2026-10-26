@@ -6,8 +6,7 @@ import {
   Building2, 
   Users, 
   CheckSquare, 
-  Crown,
-  Sparkles
+  Crown
 } from 'lucide-react';
 
 export type NavModule = 'dashboard' | 'leads' | 'opportunities' | 'accounts' | 'contacts' | 'activities';
@@ -159,26 +158,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             );
           })}
         </nav>
-      </div>
-
-      {/* Rodapé da Sidebar */}
-      <div
-        style={{
-          padding: '14px 12px',
-          borderRadius: 'var(--radius-md)',
-          backgroundColor: 'var(--sidebar-card-bg)',
-          border: '1px solid rgba(212, 175, 55, 0.22)',
-          fontSize: '12px',
-          color: 'var(--sidebar-text)'
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: '#D4AF37', marginBottom: '4px' }}>
-          <Sparkles size={14} />
-          <span>Edição Black & Gold</span>
-        </div>
-        <div>
-          Arquitetura corporativa de alta performance com design de luxo.
-        </div>
       </div>
     </aside>
   );

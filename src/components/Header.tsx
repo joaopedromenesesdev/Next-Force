@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sun, Moon, Search, RotateCcw, Coins, Command, UserCheck, Briefcase } from 'lucide-react';
+import { Sun, Moon, Search, RotateCcw, Command, UserCheck, Briefcase } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 
 interface HeaderProps {
@@ -32,22 +32,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCommand, onResetData, acti
         <h1 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>
           {activeModuleTitle}
         </h1>
-        <span
-          style={{
-            fontSize: '11px',
-            padding: '3px 9px',
-            borderRadius: '9999px',
-            backgroundColor: 'var(--brand-light)',
-            border: '1px solid var(--gold-border)',
-            color: 'var(--brand-primary)',
-            fontWeight: 600,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px'
-          }}
-        >
-          <Coins size={12} /> BRL (R$) Ativo
-        </span>
       </div>
 
       {/* Ações Centrais / Direita */}

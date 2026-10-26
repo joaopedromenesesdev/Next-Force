@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Building2, Globe, Phone, MapPin, Users, Plus, DollarSign, Briefcase, ShieldCheck, Mail, Calendar, ArrowRight, Check } from 'lucide-react';
 import { Account, Contact, Opportunity } from '../../types/crm';
 import { currencyService } from '../../core/currencyService';
+import { CurrencyInput } from '../../components/CurrencyInput';
+import { parseCurrencyToNumber } from '../../utils/currencyMask';
 
 interface AccountsModuleProps {
   accounts: Account[];
@@ -17,7 +19,7 @@ export const AccountsModule: React.FC<AccountsModuleProps> = ({ accounts, contac
   // Form states
   const [name, setName] = useState('');
   const [industry, setIndustry] = useState('Tecnologia');
-  const [revenue, setRevenue] = useState('10000000');
+  const [revenue, setRevenue] = useState('10.000.000,00');
   const [city, setCity] = useState('São Paulo, SP');
   const [phone, setPhone] = useState('(11) 4004-9988');
 
@@ -30,7 +32,7 @@ export const AccountsModule: React.FC<AccountsModuleProps> = ({ accounts, contac
       name,
       industry,
       website: name.toLowerCase().replace(/[^a-z0-9]/g, '') + '.com.br',
-      annualRevenue: Number(revenue) || 5000000,
+      annualRevenue: parseCurrencyToNumber(revenue) || 5000000,
       employees: 250,
       phone,
       city,
@@ -188,7 +190,7 @@ export const AccountsModule: React.FC<AccountsModuleProps> = ({ accounts, contac
                 </div>
                 <div>
                   <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '4px' }}>Receita Anual Estimada (R$)</label>
-                  <input type="number" className="input" value={revenue} onChange={e => setRevenue(e.target.value)} />
+                  <CurrencyInput value={revenue} onChangeValue={(_, formatted) => setRevenue(formatted)} />
                 </div>
               </div>
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '16px' }}>

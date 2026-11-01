@@ -18,6 +18,7 @@ export const App: React.FC = () => {
     data,
     moveOpportunity,
     createOpportunity,
+    updateOpportunity,
     convertLead,
     createLead,
     createAccount,
@@ -61,14 +62,23 @@ export const App: React.FC = () => {
             <DashboardModule data={data} onNavigate={m => setActiveModule(m as NavModule)} />
           )}
           {activeModule === 'leads' && (
-            <LeadsModule leads={data.leads} onConvertLead={convertLead} onCreateLead={createLead} />
+            <LeadsModule
+              leads={data.leads}
+              onConvertLead={convertLead}
+              onCreateLead={createLead}
+              onAddActivity={addActivity}
+            />
           )}
           {activeModule === 'opportunities' && (
             <OpportunitiesModule
               opportunities={data.opportunities}
               accounts={data.accounts}
+              contacts={data.contacts}
+              activities={data.activities}
               onMoveStage={moveOpportunity}
               onCreateOpportunity={createOpportunity}
+              onUpdateOpportunity={updateOpportunity}
+              onAddActivity={addActivity}
             />
           )}
           {activeModule === 'accounts' && (

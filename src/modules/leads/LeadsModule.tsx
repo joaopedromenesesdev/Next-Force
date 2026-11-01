@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
-import { ArrowRightCircle, Plus, Search, Building2, User, Kanban, Check, Sparkles, PhoneCall, Clock, Mail, Phone, Briefcase } from 'lucide-react';
-import { Lead, ID } from '../../types/crm';
+import { ArrowRightCircle, Plus, Search, Building2, User, Kanban, Check, Sparkles, PhoneCall, Clock, Mail, Phone, Briefcase, MessageCircle } from 'lucide-react';
+import { Lead, Activity, ID } from '../../types/crm';
 import { Badge } from '../../components/Badge';
 import { currencyService } from '../../core/currencyService';
 import { CurrencyInput } from '../../components/CurrencyInput';
 import { parseCurrencyToNumber } from '../../utils/currencyMask';
+import { WhatsAppActionModal } from '../../components/WhatsAppActionModal';
+import { WhatsAppIcon } from '../../components/WhatsAppIcon';
 
 interface LeadsModuleProps {
   leads: Lead[];
   onConvertLead: (leadId: ID) => void;
   onCreateLead: (lead: Omit<Lead, 'id' | 'createdAt'>) => void;
+  onAddActivity?: (act: Omit<Activity, 'id' | 'createdAt'>) => void;
 }
 
-export const LeadsModule: React.FC<LeadsModuleProps> = ({ leads, onConvertLead, onCreateLead }) => {
+export const LeadsModule: React.FC<LeadsModuleProps> = ({ leads, onConvertLead, onCreateLead, onAddActivity }) => {
   const [search, setSearch] = useState('');
   const [selectedLeadForConvert, setSelectedLeadForConvert] = useState<Lead | null>(null);
   const [isNewLeadModalOpen, setIsNewLeadModalOpen] = useState(false);
+  const [whatsAppLead, setWhatsAppLead] = useState<Lead | null>(null);
 
   // Formulário de novo lead
   const [newName, setNewName] = useState('');
@@ -52,6 +56,20 @@ export const LeadsModule: React.FC<LeadsModuleProps> = ({ leads, onConvertLead, 
     setNewCompany('');
     setNewEmail('');
     setNewPhone('');
+  };
+
+  const handleWhatsAppMessageSent = (messageText: string) => {
+    if (onAddActivity && whatsAppLead) {
+      onAddActivity({
+        type: 'whatsapp',
+        title: `WhatsApp para ${whatsAppLead.name}`,
+        description: messageText,
+        parentType: 'lead',
+        parentId: whatsAppLead.id,
+        dueDate: new Date().toISOString().split('T')[0],
+        completed: true
+      });
+    }
   };
 
   return (
@@ -101,7 +119,7 @@ export const LeadsModule: React.FC<LeadsModuleProps> = ({ leads, onConvertLead, 
               <th style={{ padding: '12px 16px', fontWeight: 600 }}>PONTUAÇÃO</th>
               <th style={{ padding: '12px 16px', fontWeight: 600 }}>POTENCIAL (BRL)</th>
               <th style={{ padding: '12px 16px', fontWeight: 600 }}>CONTATO</th>
-              <th style={{ padding: '12px 16px', fontWeight: 600, textAlign: 'right' }}>AÇÃO (SALESFORCE)</th>
+              <th style={{ padding: '12px 16px', fontWeight: 600, textAlign: 'right' }}>AÇÕES RÁPIDAS</th>
             </tr>
           </thead>
           <tbody>
@@ -176,20 +194,44 @@ export const LeadsModule: React.FC<LeadsModuleProps> = ({ leads, onConvertLead, 
                     </div>
                   </td>
                   <td style={{ padding: '14px 16px', textAlign: 'right' }}>
-                    {isConverted ? (
-                      <span style={{ fontSize: '12px', color: 'var(--brand-primary)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                        <Check size={14} /> Conta Criada
-                      </span>
-                    ) : (
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                      {/* BOTÃO WHATSAPP DIRECT ACTION (APENAS ÍCONE CLEAN) */}
                       <button
-                        onClick={() => setSelectedLeadForConvert(lead)}
-                        className="btn btn-primary btn-sm"
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                        onClick={() => setWhatsAppLead(lead)}
+                        className="btn btn-secondary btn-icon"
+                        style={{
+                          width: '28px',
+                          height: '28px',
+                          padding: 0,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: 'var(--radius-sm)',
+                          color: '#25D366',
+                          borderColor: 'rgba(37, 211, 102, 0.35)',
+                          backgroundColor: 'rgba(37, 211, 102, 0.08)',
+                          transition: 'all 0.15s ease'
+                        }}
+                        title="Iniciar conversa no WhatsApp"
                       >
-                        <ArrowRightCircle size={14} />
-                        <span>Converter Lead</span>
+                        <WhatsAppIcon size={14} color="#25D366" />
                       </button>
-                    )}
+
+                      {isConverted ? (
+                        <span style={{ fontSize: '12px', color: 'var(--brand-primary)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <Check size={14} /> Conta Criada
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => setSelectedLeadForConvert(lead)}
+                          className="btn btn-primary btn-sm"
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                        >
+                          <ArrowRightCircle size={14} />
+                          <span>Converter Lead</span>
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               );
@@ -321,6 +363,21 @@ export const LeadsModule: React.FC<LeadsModuleProps> = ({ leads, onConvertLead, 
             </form>
           </div>
         </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* MODAL WHATSAPP ACTION HUB                                */}
+      {/* ======================================================== */}
+      {whatsAppLead && (
+        <WhatsAppActionModal
+          isOpen={!!whatsAppLead}
+          onClose={() => setWhatsAppLead(null)}
+          recipientName={whatsAppLead.name}
+          recipientPhone={whatsAppLead.phone}
+          companyName={whatsAppLead.company}
+          contextType="lead"
+          onMessageSent={handleWhatsAppMessageSent}
+        />
       )}
     </div>
   );

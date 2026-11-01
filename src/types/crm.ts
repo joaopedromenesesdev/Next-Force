@@ -88,7 +88,7 @@ export interface Opportunity {
   closedAt?: string;
 }
 
-export type ActivityType = 'call' | 'task' | 'meeting' | 'note' | 'system';
+export type ActivityType = 'call' | 'task' | 'meeting' | 'note' | 'system' | 'whatsapp';
 export type ParentType = 'lead' | 'opportunity' | 'account' | 'contact';
 export type CallOutcome = 'Conectada' | 'Caixa Postal' | 'Sem Resposta' | 'Reunião Agendada';
 export type Priority = 'Alta' | 'Média' | 'Baixa';

@@ -48,6 +48,29 @@ export function useCRM() {
     return fullOpp;
   }, []);
 
+  // Atualizar Oportunidade
+  const updateOpportunity = useCallback((oppId: ID, updates: Partial<Opportunity>) => {
+    setData(prev => {
+      const updatedOpps = prev.opportunities.map(opp => {
+        if (opp.id === oppId) {
+          const merged = { ...opp, ...updates };
+          if (updates.stage) {
+            const stageConfig = PIPELINE_STAGES.find(s => s.id === updates.stage);
+            if (stageConfig && updates.probability === undefined) {
+              merged.probability = stageConfig.probability;
+            }
+            if (updates.stage === 'fechado_ganho' && !merged.closedAt) {
+              merged.closedAt = new Date().toISOString().split('T')[0];
+            }
+          }
+          return merged;
+        }
+        return opp;
+      });
+      return { ...prev, opportunities: updatedOpps };
+    });
+  }, []);
+
   // O FLUXO CLÁSSICO DE OURO DO SALESFORCE:
   // Converte Lead -> Conta + Contato + Oportunidade
   const convertLead = useCallback((leadId: ID, createOpp: boolean = true) => {
@@ -238,6 +261,7 @@ export function useCRM() {
     data,
     moveOpportunity,
     createOpportunity,
+    updateOpportunity,
     convertLead,
     createLead,
     updateLead,

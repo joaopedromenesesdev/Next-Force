@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PhoneCall, CheckSquare, Calendar, FileText, Plus, CheckCircle2, Layers, Clock, Check } from 'lucide-react';
 import { Activity } from '../../types/crm';
+import { WhatsAppIcon } from '../../components/WhatsAppIcon';
 
 interface ActivitiesModuleProps {
   activities: Activity[];
@@ -9,11 +10,11 @@ interface ActivitiesModuleProps {
 }
 
 export const ActivitiesModule: React.FC<ActivitiesModuleProps> = ({ activities, onAddActivity, onToggleComplete }) => {
-  const [activeTab, setActiveTab] = useState<'all' | 'call' | 'task' | 'meeting'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'call' | 'task' | 'meeting' | 'whatsapp'>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Form states
-  const [type, setType] = useState<'call' | 'task' | 'meeting' | 'note'>('call');
+  const [type, setType] = useState<'call' | 'task' | 'meeting' | 'note' | 'whatsapp'>('call');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
@@ -27,7 +28,7 @@ export const ActivitiesModule: React.FC<ActivitiesModuleProps> = ({ activities, 
       type,
       title,
       description,
-      completed: type === 'call' || type === 'note',
+      completed: type === 'call' || type === 'note' || type === 'whatsapp',
       dueDate: type === 'task' || type === 'meeting' ? new Date().toISOString().split('T')[0] : undefined
     });
     setIsModalOpen(false);
@@ -35,8 +36,9 @@ export const ActivitiesModule: React.FC<ActivitiesModuleProps> = ({ activities, 
     setDescription('');
   };
 
-  const activityTypeOptions: { id: 'call' | 'task' | 'meeting' | 'note'; label: string; icon: React.ReactNode }[] = [
+  const activityTypeOptions: { id: 'call' | 'task' | 'meeting' | 'note' | 'whatsapp'; label: string; icon: React.ReactNode }[] = [
     { id: 'call', label: 'Ligação', icon: <PhoneCall size={15} /> },
+    { id: 'whatsapp', label: 'WhatsApp', icon: <WhatsAppIcon size={14} color="#25D366" /> },
     { id: 'task', label: 'Tarefa', icon: <CheckSquare size={15} /> },
     { id: 'meeting', label: 'Reunião', icon: <Calendar size={15} /> },
     { id: 'note', label: 'Anotação', icon: <FileText size={15} /> }
@@ -44,9 +46,9 @@ export const ActivitiesModule: React.FC<ActivitiesModuleProps> = ({ activities, 
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          {(['all', 'call', 'task', 'meeting'] as const).map(tab => (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          {(['all', 'call', 'whatsapp', 'task', 'meeting'] as const).map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -54,6 +56,7 @@ export const ActivitiesModule: React.FC<ActivitiesModuleProps> = ({ activities, 
             >
               {tab === 'all' && <><Layers size={14} /> <span>Todas</span></>}
               {tab === 'call' && <><PhoneCall size={14} /> <span>Ligações</span></>}
+              {tab === 'whatsapp' && <><WhatsAppIcon size={13} color="#25D366" /> <span>WhatsApp</span></>}
               {tab === 'task' && <><CheckSquare size={14} /> <span>Tarefas</span></>}
               {tab === 'meeting' && <><Calendar size={14} /> <span>Reuniões</span></>}
             </button>
@@ -78,9 +81,15 @@ export const ActivitiesModule: React.FC<ActivitiesModuleProps> = ({ activities, 
                   width: '36px',
                   height: '36px',
                   borderRadius: '10px',
-                  backgroundColor: act.completed ? 'var(--brand-light)' : 'var(--bg-tertiary)',
-                  border: act.completed ? '1px solid var(--gold-border)' : '1px solid var(--border-color)',
-                  color: act.completed ? 'var(--brand-primary)' : 'var(--text-muted)',
+                  backgroundColor: act.type === 'whatsapp' 
+                    ? 'rgba(37, 211, 102, 0.12)' 
+                    : act.completed ? 'var(--brand-light)' : 'var(--bg-tertiary)',
+                  border: act.type === 'whatsapp'
+                    ? '1px solid rgba(37, 211, 102, 0.35)'
+                    : act.completed ? '1px solid var(--gold-border)' : '1px solid var(--border-color)',
+                  color: act.type === 'whatsapp'
+                    ? '#25D366'
+                    : act.completed ? 'var(--brand-primary)' : 'var(--text-muted)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -89,6 +98,7 @@ export const ActivitiesModule: React.FC<ActivitiesModuleProps> = ({ activities, 
                 }}
               >
                 {act.type === 'call' && <PhoneCall size={18} />}
+                {act.type === 'whatsapp' && <WhatsAppIcon size={18} color="#25D366" />}
                 {act.type === 'task' && <CheckSquare size={18} />}
                 {act.type === 'meeting' && <Calendar size={18} />}
                 {act.type === 'note' && <FileText size={18} />}
@@ -109,6 +119,11 @@ export const ActivitiesModule: React.FC<ActivitiesModuleProps> = ({ activities, 
               </div>
             </div>
           ))}
+          {filtered.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)', fontSize: '13px' }}>
+              Nenhuma atividade encontrada nesta categoria.
+            </div>
+          )}
         </div>
       </div>
 
@@ -119,7 +134,7 @@ export const ActivitiesModule: React.FC<ActivitiesModuleProps> = ({ activities, 
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div>
                 <label style={{ fontSize: '13px', fontWeight: 600, display: 'block', marginBottom: '6px' }}>Tipo de Atividade</label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' }}>
                   {activityTypeOptions.map(opt => (
                     <button
                       key={opt.id}
